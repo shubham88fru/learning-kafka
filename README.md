@@ -10,9 +10,17 @@ topic partitions, manages replication of data for fault tolerance, and serves cl
 - Inside the topics, published events are stored in multiple partitions.
 - Broker --> Topic --> Partitions --> Event.
 - Producer produces an event --> the event is stored in Kafka topic (on a broker, and them replicated across other brokers) --> Consumers can now consume the event.
+- Think of partitions as queues. Each topic on a broker has multiple partitions (queues) where events are queued in order.
+- Kafka brokers follow the leader-follower model. In the cluster, there's on Leader and multiple followers. Leader manages
+all the heavy lifting, and followers are mainly used for replication.
+- Howerver, an importatnt point to note is that each kafka broker can act as a leader and follower at the same time. Leader and followers are per partition. i.e. for each partition in a topic, kafka assigns a broker to be the leader and others to be follower. Therefore, a borker can be a leader for a particular partition but follower for other.
 
 - Kafka Message:
 	1. Key
 	2. Event
 	3. Timestamp
 	4. Headers
+
+- Kafak topic cli is a command line utility to interact with kafka topics.
+- Messages to topic sent with the same key are stored in the same partition and are ordered. And so,
+if we want to send messages on a topic in order, we need to send them with the same key.
