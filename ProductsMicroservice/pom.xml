@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>org.learning</groupId>
-    <artifactId>kafka</artifactId>
+    <artifactId>ProductsMicroservice</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>kafka</name>
     <description>kafka</description>
