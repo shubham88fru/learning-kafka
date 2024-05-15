@@ -24,3 +24,5 @@ all the heavy lifting, and followers are mainly used for replication.
 - Kafak topic cli is a command line utility to interact with kafka topics.
 - Messages to topic sent with the same key are stored in the same partition and are ordered. And so,
 if we want to send messages on a topic in order, we need to send them with the same key.
+
+- A kafka producer can send messages to broken either synchronously or asynchronously. When sending a message synchronously, the producer service will wait for an ack from the broker before moving forward. While when sending asynchronously, its like a fire and forget scheme.
