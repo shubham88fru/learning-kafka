@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 @Service
 public class ProductServiceImpl implements IProductService {
@@ -22,7 +23,7 @@ public class ProductServiceImpl implements IProductService {
     }
 
     @Override
-    public String createProduct(CreateProductRestModel product) {
+    public String createProduct(CreateProductRestModel product) throws ExecutionException, InterruptedException {
         String productId = UUID.randomUUID().toString();
 
         //TODO: Persist product details into database table before publishing an Event.
@@ -30,10 +31,29 @@ public class ProductServiceImpl implements IProductService {
         ProductCreatedEvent productCreatedEvent =
                 new ProductCreatedEvent(productId, product.getTitle(), product.getPrice(), product.getQuantity());
 
+        logger.info("Publishing event...");
+        //sendAsync("product-created-events-topic", productId, productCreatedEvent);
+        sendSync("product-created-events-topic", productId, productCreatedEvent);
+
+
+        return productId;
+    }
+
+    private void sendSync(String topic, String productId, ProductCreatedEvent event)
+            throws ExecutionException, InterruptedException {
+        SendResult<String, ProductCreatedEvent> result =
+                kafkaTemplate.send(topic, productId, event).get();
+
+        logger.info("Sent message sync.. {}", result.getRecordMetadata());
+    }
+
+    private void sendAsync(String topic, String productId, ProductCreatedEvent event) {
         //async producer.
         CompletableFuture<SendResult<String, ProductCreatedEvent>> future =
-                kafkaTemplate.send("product-created-events-topic", productId, productCreatedEvent);
+                kafkaTemplate.send(topic, productId, event);
+
         //lambda is invoked when the future completes.
+        //Asynchronous.
         future.whenComplete((result, ex) -> {
             if (ex != null) {
                 logger.error("Failed to send message: {}", ex.getMessage());
@@ -46,7 +66,5 @@ public class ProductServiceImpl implements IProductService {
         //wait till the future resolves. Basically
         //making the producer synchronous.
         //future.join();
-
-        return productId;
     }
 }
