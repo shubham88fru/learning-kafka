@@ -26,3 +26,9 @@ all the heavy lifting, and followers are mainly used for replication.
 if we want to send messages on a topic in order, we need to send them with the same key.
 
 - A kafka producer can send messages to broken either synchronously or asynchronously. When sending a message synchronously, the producer service will wait for an ack from the broker before moving forward. While when sending asynchronously, its like a fire and forget scheme.
+
+- Some commands:
+
+./bin/kafka-console-consumer.sh --topic product-created-events-topic --bootstrap-server localhost:9092 --property print.key=true
+./bin/kafka-topics.sh --list --bootstrap-server localhost:9092
+
