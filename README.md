@@ -21,11 +21,18 @@ all the heavy lifting, and followers are mainly used for replication.
 	3. Timestamp
 	4. Headers
 
-- Kafak topic cli is a command line utility to interact with kafka topics.
+- Kafka topic cli is a command line utility to interact with kafka topics.
 - Messages to topic sent with the same key are stored in the same partition and are ordered. And so,
 if we want to send messages on a topic in order, we need to send them with the same key.
 
 - A kafka producer can send messages to broken either synchronously or asynchronously. When sending a message synchronously, the producer service will wait for an ack from the broker before moving forward. While when sending asynchronously, its like a fire and forget scheme.
+
+- When kafka consumer reads messages from a topic, it can read messages from partitions in parallel.
+  Messages read from different partitions are not guaranteed to be ordered. However, messages
+  read from the same partition are guaranteed to be ordered.
+
+- When there are multiple consumers reading from a topic, each consumer can read
+  parallely from different partition.
 
 - Some commands:
 
