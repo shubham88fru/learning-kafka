@@ -2,7 +2,7 @@ package org.learning.kafka;
 
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.ProducerConfig;
-import org.learning.kafka.service.ProductCreatedEvent;
+import org.learning.kafka.core.ProductCreatedEvent;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
