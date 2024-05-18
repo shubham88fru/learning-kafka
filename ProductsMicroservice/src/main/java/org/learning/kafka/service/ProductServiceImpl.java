@@ -1,5 +1,6 @@
 package org.learning.kafka.service;
 
+import org.learning.kafka.core.ProductCreatedEvent;
 import org.learning.kafka.rest.CreateProductRestModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
