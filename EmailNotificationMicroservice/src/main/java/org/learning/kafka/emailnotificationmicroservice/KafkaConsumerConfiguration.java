@@ -4,6 +4,8 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.learning.kafka.emailnotificationmicroservice.exception.NonRetryableException;
+import org.learning.kafka.emailnotificationmicroservice.exception.RetryableException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +17,7 @@ import org.springframework.kafka.listener.DefaultErrorHandler;
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
+import org.springframework.util.backoff.FixedBackOff;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -63,7 +66,17 @@ public class KafkaConsumerConfiguration {
         //and an extension .dlt
         //e.g.product-created-event.dlt
         DefaultErrorHandler errorHandler =
-                new DefaultErrorHandler(new DeadLetterPublishingRecoverer(kafkaTemplate));
+                new DefaultErrorHandler(
+                        new DeadLetterPublishingRecoverer(kafkaTemplate), //publish to dead letter.
+                        new FixedBackOff(5000, 3) //add backoff between retries.
+                );
+
+        //configure the error handler with a list of not-retryable exceptions.
+        errorHandler.addNotRetryableExceptions(NonRetryableException.class);
+
+        //configure the error handler with a list of retryable exceptions.
+        errorHandler.addRetryableExceptions(RetryableException.class);
+
 
         ConcurrentKafkaListenerContainerFactory<String, Object> factory
                 = new ConcurrentKafkaListenerContainerFactory<>();
