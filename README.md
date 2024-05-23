@@ -34,6 +34,9 @@ if we want to send messages on a topic in order, we need to send them with the s
 - When there are multiple consumers reading from a topic, each consumer can read
   parallely from different partition.
 
+- Note that only one consumer can read from a partition at a time, however, one consumer
+  can read from multiple partitions.
+
 - Some commands:
 
 ./bin/kafka-console-consumer.sh --topic product-created-events-topic --bootstrap-server localhost:9092 --property print.key=true
