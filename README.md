@@ -34,8 +34,9 @@ if we want to send messages on a topic in order, we need to send them with the s
 - When there are multiple consumers reading from a topic, each consumer can read
   parallely from different partition.
 
-- Note that only one consumer can read from a partition at a time, however, one consumer
-  can read from multiple partitions.
+- Note that only one consumer (from a consumer group) can read from a partition at a time, however, one consumer
+  can read from multiple partitions. When a new consumer joins a consumer group, Kafka
+  rebalances the distribution of partitions amongst the available consumers.
 
 - Some commands:
 
