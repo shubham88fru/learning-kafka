@@ -10,6 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
@@ -26,8 +29,10 @@ public class ProductCreatedEventHandler {
     }
 
     @KafkaHandler
-    public void handle(ProductCreatedEvent event) {
-        logger.info("Received a new event: {}", event);
+    public void handle(@Payload ProductCreatedEvent event,
+                       @Header(value = "messageId", required = false) String messageId,
+                       @Header(value = KafkaHeaders.RECEIVED_KEY, required = false) String messageKey) {
+        logger.info("Received a new event: {}", event.getTitle());
 
         String theUrl = "http://localhost:8082/response/200";
         try {

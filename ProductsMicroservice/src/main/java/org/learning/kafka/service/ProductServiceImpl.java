@@ -1,5 +1,6 @@
 package org.learning.kafka.service;
 
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.learning.kafka.core.ProductCreatedEvent;
 import org.learning.kafka.rest.CreateProductRestModel;
 import org.slf4j.Logger;
@@ -42,8 +43,18 @@ public class ProductServiceImpl implements IProductService {
 
     private void sendSync(String topic, String productId, ProductCreatedEvent event)
             throws ExecutionException, InterruptedException {
+
+        ProducerRecord<String, ProductCreatedEvent> record =
+                new ProducerRecord<>(
+                        topic,
+                        productId,
+                        event
+                );
+        record.headers().add("messageId", UUID.randomUUID().toString().getBytes());
+
         SendResult<String, ProductCreatedEvent> result =
-                kafkaTemplate.send(topic, productId, event).get();
+                kafkaTemplate.send(record).get(); //use producer record to set message headers.
+                //kafkaTemplate.send(topic, productId, event).get(); //When not needing to send message header.
 
         logger.info("Sent message sync.. {}", result.getRecordMetadata());
     }
