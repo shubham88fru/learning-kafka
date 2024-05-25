@@ -51,7 +51,6 @@ public class ProductServiceImpl implements IProductService {
                         event
                 );
         record.headers().add("messageId", UUID.randomUUID().toString().getBytes());
-
         SendResult<String, ProductCreatedEvent> result =
                 kafkaTemplate.send(record).get(); //use producer record to set message headers.
                 //kafkaTemplate.send(topic, productId, event).get(); //When not needing to send message header.
